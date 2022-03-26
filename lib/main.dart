@@ -1,4 +1,8 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import 'firebase_options.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -44,19 +48,27 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           TextField(
-            controller: _emailController,
-            autocorrect: false,
-            keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(hintText: "Email")
-          ),
-             TextField(
-            controller: _passwordController,
-            obscureText: true,
-            autocorrect: false,
-            enableSuggestions: false,
-            decoration: const InputDecoration(hintText: "Password")
-          ),
-          TextButton(onPressed: () async {}, child: const Text("Register")),
+              controller: _emailController,
+              autocorrect: false,
+              keyboardType: TextInputType.emailAddress,
+              decoration: const InputDecoration(hintText: "Email")),
+          TextField(
+              controller: _passwordController,
+              obscureText: true,
+              autocorrect: false,
+              enableSuggestions: false,
+              decoration: const InputDecoration(hintText: "Password")),
+          TextButton(
+              onPressed: () async {
+                await Firebase.initializeApp(
+                  options: DefaultFirebaseOptions.currentPlatform,
+                );
+                final email = _emailController.text;
+                final password = _passwordController.text;
+                await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                    email: email, password: password);
+              },
+              child: const Text("Register")),
         ],
       ),
     );
