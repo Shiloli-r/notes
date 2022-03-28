@@ -71,9 +71,16 @@ class _HomePageState extends State<HomePage> {
                       onPressed: () async {
                         final email = _emailController.text;
                         final password = _passwordController.text;
-                        await FirebaseAuth.instance
+                        try {
+                          await FirebaseAuth.instance
                             .createUserWithEmailAndPassword(
                                 email: email, password: password);
+                        } on FirebaseAuthException catch (e) {
+                          if(e.code == 'weak-password'){}
+                          else if(e.code == 'email-already-in-use'){}
+                          else if(e.code == 'invalid-email'){}
+                        }
+                        
                       },
                       child: const Text("Register")),
                 ],
