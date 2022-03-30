@@ -37,10 +37,7 @@ class HomePage extends StatelessWidget {
               if (user?.emailVerified ?? false) {
                 return const Text("Email Verified");
               } else {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const VerifyEmailView(),
-                ));
-                return const Text("You need to verify your Email");
+                return const VerifyEmailView();
               }
             default:
               return const Text("Loading...");
@@ -61,11 +58,7 @@ class VerifyEmailView extends StatefulWidget {
 class _VerifyEmailViewState extends State<VerifyEmailView> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Verify Email"),
-      ),
-      body: Column(children: [
+    return  Column(children: [
         const Text("We will send a verification link to the email address you provided"),
         TextButton(
             onPressed: () async {
@@ -73,7 +66,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
               await user?.sendEmailVerification();
             },
             child: const Text("Send Verification Link")),
-      ]),
-    );
+      ]);
+   
   }
 }
