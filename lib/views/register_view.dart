@@ -28,20 +28,26 @@ class _RegisterViewState extends State<RegisterView> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TextField(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Register"),
+      ),
+      body: Column(
+        children: [
+          TextField(
             controller: _emailController,
             autocorrect: false,
             keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(hintText: "Email")),
-        TextField(
+            decoration: const InputDecoration(hintText: "Email"),
+          ),
+          TextField(
             controller: _passwordController,
             obscureText: true,
             autocorrect: false,
             enableSuggestions: false,
-            decoration: const InputDecoration(hintText: "Password")),
-        TextButton(
+            decoration: const InputDecoration(hintText: "Password"),
+          ),
+          TextButton(
             onPressed: () async {
               final email = _emailController.text;
               final password = _passwordController.text;
@@ -54,8 +60,17 @@ class _RegisterViewState extends State<RegisterView> {
                 } else if (e.code == 'invalid-email') {}
               }
             },
-            child: const Text("Register")),
-      ],
+            child: const Text("Register"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context)
+                  .pushNamedAndRemoveUntil("/login/", (route) => false);
+            },
+            child: const Text("Already have an account? Login here!"),
+          ),
+        ],
+      ),
     );
   }
 }
