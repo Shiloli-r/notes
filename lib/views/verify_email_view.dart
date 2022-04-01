@@ -15,8 +15,8 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
     return Scaffold(
       appBar: AppBar(title: const Text("Verify Your Email")),
       body: Column(children: [
-        const Text(
-            "We will send a verification link to the email address you provided"),
+        const Text("We've sent a verification link to your email address"),
+        const Text("Click the link below if you have not received the link"),
         TextButton(
           onPressed: () async {
             final user = FirebaseAuth.instance.currentUser;
@@ -26,6 +26,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
         ),
         TextButton(
           onPressed: () {
+            FirebaseAuth.instance.signOut();
             Navigator.of(context).pushNamedAndRemoveUntil(
               loginRoute,
               (route) => false,
