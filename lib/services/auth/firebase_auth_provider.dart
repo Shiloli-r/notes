@@ -9,11 +9,22 @@ import 'package:firebase_auth/firebase_auth.dart'
 
 class FirebaseAuthProvider implements AuthProvider {
   @override
-  Future<AuthUser> createUser(
-      {required String email, required String password}) async {
+  Future<void> initialize() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
+
+  @override
+  Future<AuthUser> createUser({
+    required String email,
+    required String password,
+  }) async {
     try {
-      await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
       final user = currentUser;
       if (user != null) {
         return user;
@@ -46,11 +57,15 @@ class FirebaseAuthProvider implements AuthProvider {
   }
 
   @override
-  Future<AuthUser> logIn(
-      {required String email, required String password}) async {
+  Future<AuthUser> logIn({
+    required String email,
+    required String password,
+  }) async {
     try {
-      await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
       final user = currentUser;
       if (user != null) {
         return user;
@@ -73,9 +88,9 @@ class FirebaseAuthProvider implements AuthProvider {
   @override
   Future<void> logOut() async {
     final user = FirebaseAuth.instance.currentUser;
-    if(user != null){
+    if (user != null) {
       await FirebaseAuth.instance.signOut();
-    }else{
+    } else {
       throw UserNotLoggedInAuthException();
     }
   }
@@ -91,9 +106,20 @@ class FirebaseAuthProvider implements AuthProvider {
   }
 
   @override
-  Future<void> initialize () async {
-    await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
+  Future<void> sendPasswordReset({required String toEmail}) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: toEmail);
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'firebase_auth/invalid-email':
+          throw InvalidEmailAuthException();
+        case 'firebase_auth/user-not-found':
+          throw UserNotFoundAuthException();
+        default:
+          throw GenericAuthException();
+      }
+    } catch (_) {
+      throw GenericAuthException();
+    }
   }
 }
